@@ -1,56 +1,54 @@
-DAST
-
-(Docker + AWS + Selenium (Grid) + Terrform)
-
 # About
 
-An example configuration demonstrating Selenium Grid via Docker on AWS via Terraform for IaC.
+An example configuration demonstrating Selenium Grid via Docker Compose on AWS 
 
 # Usage
 
-## Install
-
-```bash
-git clone https://github.com/davidjeddy/docker_aws_selenium_terraform.git
-cd ./docker_aws_selenium_terraform
-cp .env.dist .env
-vim .env
-terraform init
+# Terraform-SeleniumDocker-on AWS
+Install terraform
 ```
-
-## Execution
-
-```bash
-# build Terraform plan file
-terraform plan --out ./out.plan -var-file=.env
-
-# apply Terraform plan file
-terraform apply -lock=true ./out.plan
-
-# copy setup script for Selenium to remote host
-scp -i ~/.ssh/$(terraform output "SSH pem key").pem -oStrictHostKeyChecking=no ./resources/selenium.sh ubuntu@$(terraform output "Selenium Grid Public DNS"):/home/ubuntu/selenium.sh
-
-# ...  and execute
-ssh -i ~/.ssh/$(terraform output "SSH pem key").pem -oStrictHostKeyChecking=no ubuntu@$(terraform output "Selenium Grid Public DNS") "chmod +x /home/ubuntu/selenium.sh && sudo /home/ubuntu/selenium.sh"
-
-# copy setup script for Web App to remote host
-scp -i ~/.ssh/$(terraform output "SSH pem key").pem -oStrictHostKeyChecking=no ./resources/web_app.sh ubuntu@$(terraform output "Web App Public DNS"):/home/ubuntu/web_app.sh
-
-# ...  and execute
-ssh -i ~/.ssh/$(terraform output "SSH pem key").pem -oStrictHostKeyChecking=no ubuntu@$(terraform output "Web App Public DNS") "chmod +x /home/ubuntu/web_app.sh && cd /home/ubuntu/ && sudo ./web_app.sh"
-
-# Run Selenium tests from Web App host to Selenium Grid host
-ssh -i ~/.ssh/$(terraform output "SSH pem key").pem -oStrictHostKeyChecking=no ubuntu@$(terraform output "Web App Public DNS") "cd /home/ubuntu/spring-petclinic && sudo mvn test -Dtest=SeleniumExampleTest -DSG_FQDN=\"$(terraform output "Selenium Grid Public DNS")\" -DWEB_APP_FQDN=\"$(terraform output "Web App Public DNS")\""
+wget https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_amd64.zip
+unzip terraform_0.12.24_linux_amd64.zip
 ```
-
-## Remove
-
-```bash
-terraform destroy -auto-approve -var-file=.env
+# Create S3 bucket
 ```
+name terraform-bucket-poc-3436
 
-# Prereq
-- [AWS CLI API credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-iam-create-creds.html)
-- [Linux Terminal](https://en.wikipedia.org/wiki/Linux_console)
-- [SSH](https://en.wikipedia.org/wiki/Secure_Shell)
-- [Terraform](https://en.wikipedia.org/wiki/Terraform_(software))
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::terraform-bucket-poc-3436"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject"],
+      "Resource": "arn:aws:s3:::terraform-bucket-poc-3436/terraform-selenium.tfstate"
+    }
+  ]
+}
+```
+# Test Run
+```
+# Export AWS Environment
+
+export AWS_ACCESS_KEY_ID=<key>
+export AWS_SECRET_ACCESS_KEY=<secret>
+export AWS_DEFAULT_REGION=ap-southeast-1
+
+# Run Terraform
+./terraform init
+
+If init error --> remove .terraform folder and run again
+
+./terraform plan
+
+./terraform apply 
+
+./terraform apply -auto-approve
+
+#UnApply
+./terraform destroy
+```

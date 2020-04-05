@@ -12,7 +12,7 @@ module "selenium_grid_host" {
   monitoring             = true
   vpc_security_group_ids = ["${aws_default_security_group.default.id}"]
   subnet_id              = "${var.AWS_SUBNET}"
-  user_data = "${file("install_nginx.sh")}"
+  user_data = "${file("run-selenium.sh")}"
 
   name                   = "Selenium Grid"
 

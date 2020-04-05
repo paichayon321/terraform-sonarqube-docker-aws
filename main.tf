@@ -23,7 +23,7 @@ resource "aws_instance" "default" {
   instance_type          = var.instance_type
 
   tags = {
-    Name = "Selenium Grid"
+    Name = "SeleniumGrid-Terraform"
   }
 }
 

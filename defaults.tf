@@ -5,7 +5,7 @@ resource "aws_default_vpc" "default" {
 }
 
 resource "aws_default_security_group" "default" {
-  vpc_id = "${aws_default_vpc.default.id}"
+  vpc_id = var.vpc_id
 
   ingress {
     protocol  = "TCP"

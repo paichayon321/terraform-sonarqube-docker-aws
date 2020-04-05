@@ -11,7 +11,7 @@ resource "aws_default_security_group" "default" {
     protocol  = "TCP"
     from_port = 22
     to_port   = 22
-    cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {

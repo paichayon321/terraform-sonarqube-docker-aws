@@ -20,7 +20,7 @@ usermod -aG docker $(whoami)
 which docker
 docker --version
 
-docker container run hello-world
+#docker container run hello-world
 
 echo '# To execute this docker-compose yml file use `docker-compose -f <file_name> up`
 # Add the `-d` flag at the end for detached execution

@@ -15,7 +15,7 @@ variable "instance_type" {
 variable "ami" {
   description = "Base AMI to launch the instances"
   # Ubuntu 18.x AMI
-  default = "ami-067707eefb70fdd6f"
+  default = "ami-02c4c96e0a37b397f"
 }
 
 variable "subnet_id" {

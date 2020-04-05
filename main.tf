@@ -1,14 +1,14 @@
 terraform {
   backend "s3" {
     bucket = "terraform-bucket-poc-3436"
-    key    = "terraform.tfstate"
+    key    = "terraform.selenium-tfstate"
     region = "ap-southeast-1"
   }
 }
 
-# Use AWS Terraform provider
+# Configure the AWS Provider
 provider "aws" {
-  region = "ap-southeast-1"
+  region     = "ap-southeast-1"
 }
 
 # Create EC2 instance

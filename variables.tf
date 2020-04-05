@@ -1,15 +1,26 @@
-variable "APP_ENV" {
-  
+variable "instance_count" {
+  default = 1
 }
 
-variable "AWS_REGION" {
-  
+variable "key_name" {
+  description = "Private key name to use with instance"
+  default     = "ktbcs-key"
 }
 
-variable "AWS_PEM_KEY" {
-  
+variable "instance_type" {
+  description = "AWS instance type"
+  default     = "t3.small"
 }
 
-variable "AWS_SUBNET" {
-  
+variable "ami" {
+  description = "Base AMI to launch the instances"
+
+  # Ubuntu 18.x AMI
+  default = "ami-067707eefb70fdd6f"
 }
+
+variable "subnet_id" {
+  description = "Default vpc subnet"
+  default = "subnet-e33cdb85"
+}
+

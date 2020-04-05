@@ -4,9 +4,9 @@ resource "aws_default_vpc" "default" {
   }
 }
 
-resource "aws_default_security_group" "default" {
+resource "aws_security_group" "default" {
   vpc_id = var.vpc_id
-
+  name = "selenium-terraform-sg"
   ingress {
     protocol  = "TCP"
     from_port = 22

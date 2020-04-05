@@ -1,11 +1,4 @@
-resource "aws_default_vpc" "default" {
-  tags = {
-    Name = "Default VPC"
-  }
-}
-
 resource "aws_security_group" "default" {
-  vpc_id = var.vpc_id
   name = "selenium-terraform-sg"
   ingress {
     protocol  = "TCP"

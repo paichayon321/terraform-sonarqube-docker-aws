@@ -1,3 +1,16 @@
+terraform {
+  backend "s3" {
+    bucket = "terraform-bucket-poc-3436"
+    key    = "terraform.tfstate"
+    region = "ap-southeast-1"
+  }
+}
+
+# Use AWS Terraform provider
+provider "aws" {
+  region = "ap-southeast-1"
+}
+
 # Create EC2 instance
 resource "aws_instance" "default" {
   ami                    = var.ami

@@ -24,30 +24,47 @@ docker --version
 
 echo '# To execute this docker-compose yml file use `docker-compose -f <file_name> up`
 # Add the `-d` flag at the end for detached execution
-version: "3"
+version: "2"
+
 services:
-  selenium-hub:
-    image: selenium/hub:3.141.59-neon
-    container_name: selenium-hub
+  sonarqube:
+    image: sonarqube
     ports:
-      - "4444:4444"
-  chrome:
-    image: selenium/node-chrome:3.141.59-neon
-    volumes:
-      - /dev/shm:/dev/shm
-    depends_on:
-      - selenium-hub
+      - "9000:9000"
+    networks:
+      - sonarnet
     environment:
-      - HUB_HOST=selenium-hub
-      - HUB_PORT=4444
-  firefox:
-    image: selenium/node-firefox:3.141.59-neon
+      - sonar.jdbc.username=sonar
+      - sonar.jdbc.password=
+      - sonar.jdbc.url=jdbc:postgresql://db:5432/sonar
     volumes:
-      - /dev/shm:/dev/shm
-    depends_on:
-      - selenium-hub
+      - sonarqube_conf:/opt/sonarqube/conf
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+    ulimits:
+      nofile:
+       soft: 65536
+       hard: 65536
+  db:
+    image: postgres
+    networks:
+      - sonarnet
     environment:
-      - HUB_HOST=selenium-hub
-      - HUB_PORT=4444' > docker-compose.yml
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - postgresql_data:/var/lib/postgresql/data
+
+networks:
+  sonarnet:
+    driver: bridge
+
+volumes:
+  sonarqube_conf:
+  sonarqube_data:
+  sonarqube_extensions:
+  postgresql:
+  postgresql_data:' > docker-compose.yml
 
 docker-compose up -d

@@ -19,7 +19,7 @@ resource "aws_instance" "default" {
   subnet_id              = var.subnet_id
   vpc_security_group_ids = [aws_security_group.default.id]
   source_dest_check      = false
-  user_data = "${file("run-sonarqube.sh")}"
+  user_data = "${file("run.sh")}"
   instance_type          = var.instance_type
 
   tags = {

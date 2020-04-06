@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "terraform-bucket-poc-3436"
-    key    = "terraform.selenium-tfstate"
+    key    = "terraform.sonarqube-tfstate"
     region = "ap-southeast-1"
   }
 }
@@ -19,16 +19,16 @@ resource "aws_instance" "default" {
   subnet_id              = var.subnet_id
   vpc_security_group_ids = [aws_security_group.default.id]
   source_dest_check      = false
-  user_data = "${file("run-selenium.sh")}"
+  user_data = "${file("run-sonarqube.sh")}"
   instance_type          = var.instance_type
 
   tags = {
-    Name = "SeleniumGrid-Terraform"
+    Name = "SonarQube-Terraform"
   }
 }
 
 resource "aws_security_group" "default" {
-  name = "selenium-terraform-sg"
+  name = "sonarqube-terraform-sg"
   ingress {
     protocol  = "TCP"
     from_port = 22
@@ -37,22 +37,8 @@ resource "aws_security_group" "default" {
   }
 
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 4444
-    to_port     = 4444
-    protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 8080
-    to_port     = 8080
+    from_port   = 9000
+    to_port     = 9000
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"]
   }

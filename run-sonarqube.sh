@@ -35,7 +35,7 @@ services:
       - sonarnet
     environment:
       - sonar.jdbc.username=sonar
-      - sonar.jdbc.password=
+      - sonar.jdbc.password=password
       - sonar.jdbc.url=jdbc:postgresql://db:5432/sonar
     volumes:
       - sonarqube_conf:/opt/sonarqube/conf
@@ -51,7 +51,7 @@ services:
       - sonarnet
     environment:
       - POSTGRES_USER=sonar
-      - POSTGRES_PASSWORD=
+      - POSTGRES_PASSWORD=password
     volumes:
       - postgresql:/var/lib/postgresql
       - postgresql_data:/var/lib/postgresql/data

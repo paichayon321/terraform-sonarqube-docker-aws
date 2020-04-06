@@ -11,6 +11,11 @@ provider "aws" {
   region     = "ap-southeast-1"
 }
 
+resource "aws_eip" "default" {
+  instance = "${aws_instance.default.id}"
+  vpc      = true
+}
+
 # Create EC2 instance
 resource "aws_instance" "default" {
   ami                    = var.ami

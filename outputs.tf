@@ -6,6 +6,6 @@ output "address" {
   value = "${aws_instance.default.private_ip}"
 }
 
-output "elastic ip" {
+output "elastic_ip" {
   value = "${aws_eip.default.public_ip}"
 }

@@ -20,7 +20,8 @@ variable "ami" {
 
 variable "subnet_id" {
   description = "Default vpc subnet"
-  default = "subnet-e33cdb85"
+  #default = "subnet-e33cdb85"
+  default = "subnet-cb5196ad"
 }
 
 

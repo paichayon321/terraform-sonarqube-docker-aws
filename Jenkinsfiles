@@ -1,0 +1,95 @@
+def gitCredId = "paichayon-github"
+def gitUrl = "https://github.com/paichayon321/terraform-sonarqube-docker-aws.git"
+
+
+pipeline {
+  agent any
+  environment {
+    //TF_IN_AUTOMATION = 'true'
+    AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
+    AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
+    AWS_DEFAULT_REGION = "ap-southeast-1"
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        script {
+          echo "Now Perform Clone Steps"
+          git branch: 'master', credentialsId: "${gitCredId}", url: "${gitUrl}"
+          commitId = sh(returnStdout: true, script: 'git rev-parse HEAD')
+          message = "\nJob: ${env.JOB_NAME} \nStage Clone is Success.\nSee more detail at \n${env.BUILD_URL}console"
+        }
+      }
+    }  
+    stage('Terraform Init') {
+      steps {
+        script {
+          echo "Now Perform terraform init"
+          sh "rm -rf .terraform"
+          sh "terraform init -input=false"
+        }
+      }
+    }
+    stage('Terraform Plan') {
+      steps {
+        script {
+          echo "Now Perform terraform plan"
+          sh "terraform plan -out=tfplan -input=false"
+        }
+      }
+    }
+    stage('Approval') {
+      steps {
+        script {
+          def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
+        }
+      }
+    }
+    
+    stage('Terraform Apply') {
+      steps {
+//        input 'Apply Plan'
+        script {
+          echo "Now Perform terraform apply"
+          //sh "terraform apply -input=false tfplan"
+        }
+      }
+    }
+    stage('Wait and Test') {
+       steps {
+          sleep 60 
+          sh "echo done "
+      }
+    }
+  }
+  
+  post {
+    failure {
+        script {
+          message = "\nJob: ${env.JOB_NAME} \nRESULT: FAILURE \nSee more at ${env.BUILD_URL}console"
+        //   notifyLINE("${linecicdnotify}", "${message}")  
+        //   notifyLINE("${linetester}", "${message}")
+        //   notifyLINE("${lineoper}", "${message}")
+        //   notifyLINE("${linedev}", "${message}")
+        }
+    }
+    aborted {
+        script {
+          message = "\nJob: ${env.JOB_NAME} \nRESULT: ABORTED \nSee more at ${env.BUILD_URL}console"
+        //   notifyLINE("${linecicdnotify}", "${message}")  
+        //   notifyLINE("${linetester}", "${message}")
+        //   notifyLINE("${lineoper}", "${message}")
+        //   notifyLINE("${linedev}", "${message}")
+        }
+    }
+    success {
+        script {
+          message = "\nJob: ${env.JOB_NAME} \nRESULT: SUCCESS \nReason is ${env.Reason} \nSee more at ${env.BUILD_URL}console"
+        //   notifyLINE("${linecicdnotify}", "${message}")  
+        //   notifyLINE("${linetester}", "${message}")
+        //   notifyLINE("${lineoper}", "${message}")
+        //   notifyLINE("${linedev}", "${message}")
+        }
+    }
+  }
+}
